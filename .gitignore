@@ -7,7 +7,7 @@
 */pkg
 # testing
 /coverage
-
+**\pkg
 # production
 /front/build
 

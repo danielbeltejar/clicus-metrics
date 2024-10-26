@@ -11,6 +11,7 @@
 **\pkg
 # production
 /front/build
+*/.idea
 
 # misc
 .DS_Store

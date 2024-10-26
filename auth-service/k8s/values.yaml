@@ -1,0 +1,37 @@
+replicaCount: 2
+
+containerPort: 8080
+registry: registry.server.local:5000
+
+namespace: pro-clicus-metrics-back
+
+env:
+  TZ: "UTC"
+  MONGO_URI: ""
+  ALLOW_USER_CREATION: "true"
+secrets:
+  JWT_SECRET: "JWT_SECRET"
+
+resources:
+  requests:
+    memory: "32Mi"
+    cpu: "250m"
+  limits:
+    memory: "128Mi"
+    cpu: "500m"
+
+probes:
+  enabled: true
+  readiness:
+    enabled: true
+    path: /healthz
+    periodSeconds: 30
+  liveness:
+    enabled: true
+    path: /healthz
+    periodSeconds: 30
+  startup:
+    enabled: true
+    path: /healthz
+    periodSeconds: 5
+    initialDelaySeconds: 10

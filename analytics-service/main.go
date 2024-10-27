@@ -9,13 +9,13 @@ import (
 
 func main() {
 	InitConfig()
-	db := InitMongo()
+	db, client := InitMongo()
 	handlers.InitAnalyticsService(db, JwtSecret)
 
 	r := mux.NewRouter()
 
 	// Health check endpoint without authentication middleware
-	r.HandleFunc("/healthz", handlers.HealthCheck(db)).Methods("GET")
+	r.HandleFunc("/healthz", handlers.HealthCheck(db, client)).Methods("GET")
 
 	// Routes that require authentication
 	securedRoutes := r.PathPrefix("/analytics").Subrouter()

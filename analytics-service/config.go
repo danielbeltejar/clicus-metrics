@@ -30,7 +30,7 @@ func InitConfig() {
 	}
 }
 
-func InitMongo() *mongo.Database {
+func InitMongo() (*mongo.Database, *mongo.Client) {
 	mongoURI := fmt.Sprintf("mongodb://%s:%s@%s", MongoUser, MongoPass, MongoURI)
 
 	// Connect to MongoDB using MongoURI from config
@@ -41,5 +41,5 @@ func InitMongo() *mongo.Database {
 	}
 	//defer client.Disconnect(context.Background())
 
-	return client.Database("clicus")
+	return client.Database("clicus"), client
 }

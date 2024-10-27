@@ -39,7 +39,6 @@ func InitMongo() *mongo.Database {
 	if err != nil {
 		log.Fatalf("Failed to connect to MongoDB: %v", err)
 	}
-	defer client.Disconnect(context.Background())
 
 	return client.Database("clicus")
 }

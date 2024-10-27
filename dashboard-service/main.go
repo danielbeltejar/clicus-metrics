@@ -16,6 +16,7 @@ func main() {
 
 	r := mux.NewRouter()
 	r.HandleFunc("/dashboard", handlers.GetDashboardData).Methods("GET")
+	r.HandleFunc("/healthz", handlers.HealthCheck(db)).Methods("GET")
 
 	log.Println("Dashboard service running on port 8080")
 	log.Fatal(http.ListenAndServe(":8080", r))

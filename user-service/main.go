@@ -18,6 +18,7 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/register", handlers.RegisterUser).Methods("POST")
 	r.HandleFunc("/user", handlers.GetUser).Methods("GET")
+	r.HandleFunc("/healthz", handlers.HealthCheck(db)).Methods("GET")
 
 	log.Println("User service running on port 8083")
 	log.Fatal(http.ListenAndServe(":8083", r))

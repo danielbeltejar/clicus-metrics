@@ -24,15 +24,15 @@ resources:
 probes:
   enabled: true
   readiness:
-    enabled: true
+    enabled: false
     path: /healthz
     periodSeconds: 30
   liveness:
-    enabled: true
+    enabled: false
     path: /healthz
     periodSeconds: 30
   startup:
-    enabled: true
+    enabled: false
     path: /healthz
     periodSeconds: 5
     initialDelaySeconds: 10

@@ -40,5 +40,5 @@ func InitMongo() *mongo.Database {
 	}
 	defer client.Disconnect(context.Background())
 
-	return client.Database("clicus_metrics")
+	return client.Database("clicus")
 }

@@ -13,10 +13,15 @@ func main() {
 	handlers.InitAnalyticsService(db, JwtSecret)
 
 	r := mux.NewRouter()
-	r.Use(handlers.AuthMiddleware(JwtSecret)) // Pass JwtSecret to AuthMiddleware
-	r.HandleFunc("/analytics/log/{url_id}", handlers.LogClick).Methods("POST")
-	r.HandleFunc("/analytics/{url_id}", handlers.GetAnalytics).Methods("GET")
+
+	// Health check endpoint without authentication middleware
 	r.HandleFunc("/healthz", handlers.HealthCheck(db)).Methods("GET")
+
+	// Routes that require authentication
+	securedRoutes := r.PathPrefix("/analytics").Subrouter()
+	securedRoutes.Use(handlers.AuthMiddleware(JwtSecret)) // Apply middleware only to these routes
+	securedRoutes.HandleFunc("/log/{url_id}", handlers.LogClick).Methods("POST")
+	securedRoutes.HandleFunc("/{url_id}", handlers.GetAnalytics).Methods("GET")
 
 	log.Println("Analytics service running on port 8080")
 	log.Fatal(http.ListenAndServe(":8080", r))

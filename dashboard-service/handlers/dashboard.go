@@ -14,8 +14,8 @@ import (
 var urlCollection *mongo.Collection
 
 // InitHandlers initializes the URL collection for the handlers
-func InitHandlers(collection *mongo.Collection) {
-	urlCollection = collection
+func InitHandlers(db *mongo.Database) {
+	urlCollection = db.Collection("urls")
 }
 
 func GetDashboardData(w http.ResponseWriter, r *http.Request) {

@@ -3,7 +3,6 @@ package handlers
 
 import (
 	"analytics-service/models"
-	"clicus-metrics/config"
 	"context"
 	"encoding/json"
 	"github.com/golang-jwt/jwt/v4"
@@ -14,12 +13,13 @@ import (
 	"time"
 )
 
-// Define your MongoDB collection variable
 var analyticsCollection *mongo.Collection
+var jwtSecret string
 
-// InitAnalyticsService initializes the analytics service.
-func InitAnalyticsService(db *mongo.Database) {
+// InitAnalyticsService initializes the analytics service and sets the JWT secret.
+func InitAnalyticsService(db *mongo.Database, secret string) {
 	analyticsCollection = db.Collection("analytics")
+	jwtSecret = secret
 }
 
 // LogClick logs a click for a given URL ID.
@@ -70,26 +70,28 @@ func GetAnalytics(w http.ResponseWriter, r *http.Request) {
 }
 
 // AuthMiddleware is a middleware for authenticating requests using JWT.
-func AuthMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		tokenString := r.Header.Get("Authorization")
-		if tokenString == "" {
-			http.Error(w, "Authorization header is required", http.StatusUnauthorized)
-			return
-		}
+func AuthMiddleware(secret string) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			tokenString := r.Header.Get("Authorization")
+			if tokenString == "" {
+				http.Error(w, "Authorization header is required", http.StatusUnauthorized)
+				return
+			}
 
-		tokenString = tokenString[len("Bearer "):]
+			tokenString = tokenString[len("Bearer "):]
 
-		claims := &jwt.StandardClaims{}
-		token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
-			return []byte(config.JwtSecret), nil // Access JwtSecret from config
+			claims := &jwt.StandardClaims{}
+			token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
+				return []byte(secret), nil
+			})
+
+			if err != nil || !token.Valid {
+				http.Error(w, "Invalid token", http.StatusUnauthorized)
+				return
+			}
+
+			next.ServeHTTP(w, r)
 		})
-
-		if err != nil || !token.Valid {
-			http.Error(w, "Invalid token", http.StatusUnauthorized)
-			return
-		}
-
-		next.ServeHTTP(w, r)
-	})
+	}
 }

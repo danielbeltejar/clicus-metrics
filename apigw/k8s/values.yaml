@@ -7,4 +7,4 @@ containerPort: 8080
 healthPort: 8081
 registry: registry.server.local:5000
 
-namespace: pro-homepage-front
+namespace: pro-clicus-metrics-front

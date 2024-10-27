@@ -1,7 +1,6 @@
 package main
 
 import (
-	"golang.org/x/net/context"
 	"log"
 	"net/http"
 	"url-service/handlers"
@@ -10,10 +9,9 @@ import (
 )
 
 func main() {
-	initMongoDB()
-	defer mongoClient.Disconnect(context.Background())
-
-	handlers.InitHandlers(urlCollection)
+	InitConfig()
+	db := InitMongo()
+	handlers.InitHandlers(db)
 
 	r := mux.NewRouter()
 	r.HandleFunc("/shorten", handlers.ShortenURL).Methods("POST")

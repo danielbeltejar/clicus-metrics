@@ -13,8 +13,8 @@ import (
 
 var urlCollection *mongo.Collection
 
-func InitHandlers(collection *mongo.Collection) {
-	urlCollection = collection
+func InitHandlers(db *mongo.Database) {
+	urlCollection = db.Collection("urls")
 }
 
 // ShortenURL creates a new short URL and stores it in MongoDB

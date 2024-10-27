@@ -1,4 +1,3 @@
-// handlers/user.go
 package handlers
 
 import (
@@ -14,8 +13,8 @@ import (
 var userCollection *mongo.Collection
 
 // InitHandlers initializes the User collection for the handlers
-func InitHandlers(collection *mongo.Collection) {
-	userCollection = collection
+func InitHandlers(db *mongo.Database) {
+	userCollection = db.Collection("users")
 }
 
 func RegisterUser(w http.ResponseWriter, r *http.Request) {

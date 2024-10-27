@@ -2,7 +2,6 @@
 package main
 
 import (
-	"context"
 	"log"
 	"net/http"
 	"user-service/handlers"
@@ -11,11 +10,10 @@ import (
 )
 
 func main() {
-	initMongoDB()
-	defer mongoClient.Disconnect(context.Background())
-
+	InitConfig()
+	db := InitMongo()
 	// Initialize handlers with the User collection
-	handlers.InitHandlers(userCollection)
+	handlers.InitHandlers(db)
 
 	r := mux.NewRouter()
 	r.HandleFunc("/register", handlers.RegisterUser).Methods("POST")

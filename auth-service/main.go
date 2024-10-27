@@ -20,10 +20,9 @@ import (
 // @host localhost:8080
 // @BasePath /
 func main() {
-	initConfig()
-
-	// Initialize auth service with mongoURI, jwtSecret, and allowUserCreation
-	handlers.InitAuthService(mongoURI, jwtSecret, allowUserCreation)
+	InitConfig()
+	db := InitMongo()
+	handlers.InitAuthService(db, JwtSecret, AllowUserCreation)
 
 	r := mux.NewRouter()
 	r.HandleFunc("/register", handlers.Register).Methods("POST")

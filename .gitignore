@@ -9,10 +9,13 @@
 # testing
 /coverage
 **\pkg
+**/pkg
 # production
 /front/build
 **/.idea
 **\.idea
+**/go.sum
+**\go.sum
 # misc
 .DS_Store
 .env.local

@@ -2,7 +2,6 @@
 package main
 
 import (
-	"context"
 	"dashboard-service/handlers"
 	"log"
 	"net/http"
@@ -11,11 +10,9 @@ import (
 )
 
 func main() {
-	initMongoDB()
-	defer mongoClient.Disconnect(context.Background())
-
-	// Initialize handlers with the URL collection
-	handlers.InitHandlers(urlCollection)
+	InitConfig()
+	db := InitMongo()
+	handlers.InitHandlers(db)
 
 	r := mux.NewRouter()
 	r.HandleFunc("/dashboard", handlers.GetDashboardData).Methods("GET")

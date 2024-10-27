@@ -6,8 +6,6 @@ import (
 	"context"
 	"encoding/json"
 	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
-	"log"
 	"net/http"
 )
 
@@ -18,15 +16,11 @@ var (
 )
 
 // InitAuthService initializes the auth service with MongoDB URI, JWT secret, and user creation flag.
-func InitAuthService(mongoURI, secret string, allowCreation bool) {
+func InitAuthService(database *mongo.Database, secret string, allowCreation bool) {
 	jwtSecret = secret
 	allowUserCreation = allowCreation
-	clientOptions := options.Client().ApplyURI(mongoURI)
-	client, err := mongo.Connect(context.TODO(), clientOptions)
-	if err != nil {
-		log.Fatal("Error connecting to MongoDB:", err)
-	}
-	userCollection = client.Database("clicusmetrics").Collection("users")
+
+	userCollection = database.Collection("users")
 }
 
 // @Summary Register a new user

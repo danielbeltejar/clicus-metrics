@@ -2,43 +2,18 @@ package main
 
 import (
 	"analytics-service/handlers"
-	"context"
 	"github.com/gorilla/mux"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
 	"net/http"
 )
 
-// @title Analytics Service API
-// @version 1.0
-// @description API for logging and retrieving URL click analytics
-// @termsOfService http://clicus.danielbeltejar.es/terms/
-// @contact.name API Support
-// @contact.url http://danielbeltejar.es/
-// @contact.email hi@danielbeltejar.es/
-// @license.name MIT
-// @license.url http://opensource.org/licenses/MIT
-// @host localhost:8084
-// @BasePath /
 func main() {
-	initConfig()
-
-	// Connect to MongoDB
-	clientOptions := options.Client().ApplyURI(MongoURI)
-	client, err := mongo.Connect(context.Background(), clientOptions)
-	if err != nil {
-		log.Fatalf("Failed to connect to MongoDB: %v", err)
-	}
-	defer client.Disconnect(context.Background())
-
-	db := client.Database("clicus_metrics")
-
-	// Initialize analytics service
-	handlers.InitAnalyticsService(db)
+	InitConfig()
+	db := InitMongo()
+	handlers.InitAnalyticsService(db, JwtSecret)
 
 	r := mux.NewRouter()
-	r.Use(handlers.AuthMiddleware) // Use the AuthMiddleware for all routes
+	r.Use(handlers.AuthMiddleware(JwtSecret)) // Pass JwtSecret to AuthMiddleware
 	r.HandleFunc("/analytics/log/{url_id}", handlers.LogClick).Methods("POST")
 	r.HandleFunc("/analytics/{url_id}", handlers.GetAnalytics).Methods("GET")
 

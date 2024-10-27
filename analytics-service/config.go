@@ -40,5 +40,9 @@ func InitMongo() *mongo.Database {
 		log.Fatalf("Failed to connect to MongoDB: %v", err)
 	}
 
+	if err := client.Ping(context.Background(), nil); err != nil {
+		log.Fatalf("Failed to ping MongoDB: %v", err)
+	}
+
 	return client.Database("clicus")
 }

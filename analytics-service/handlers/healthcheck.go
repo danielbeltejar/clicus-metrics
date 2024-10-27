@@ -3,25 +3,17 @@ package handlers
 import (
 	"context"
 	"go.mongodb.org/mongo-driver/mongo"
-	"log"
 	"net/http"
-	"time"
 )
 
-// HealthCheck checks if the service is running and MongoDB is connected
+// HealthCheck checks if the service is running and MongoDB is connected.
 func HealthCheck(db *mongo.Database) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		ctx, cancel := context.WithTimeout(r.Context(), 2*time.Second)
-		defer cancel()
-
-		// Ping MongoDB to ensure the connection is alive
-		if err := db.Client().Ping(ctx, nil); err != nil {
-			log.Println("MongoDB connection error:", err)
-			http.Error(w, "Service unavailable", http.StatusServiceUnavailable)
+		if err := db.Client().Ping(context.Background(), nil); err != nil {
+			http.Error(w, "MongoDB connection failed", http.StatusInternalServerError)
 			return
 		}
-
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("OK"))
+		w.Write([]byte("Service is running and MongoDB is connected"))
 	}
 }

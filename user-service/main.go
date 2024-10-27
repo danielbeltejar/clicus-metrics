@@ -20,6 +20,6 @@ func main() {
 	r.HandleFunc("/user", handlers.GetUser).Methods("GET")
 	r.HandleFunc("/healthz", handlers.HealthCheck(db)).Methods("GET")
 
-	log.Println("User service running on port 8083")
-	log.Fatal(http.ListenAndServe(":8083", r))
+	log.Println("User service running on port 8080")
+	log.Fatal(http.ListenAndServe(":8080", r))
 }
